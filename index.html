@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CERES</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="./ceres-start/icon-32.png?v=v3.13.21" />
+    <link rel="icon" type="image/svg+xml" href="./ceres-start/ceres-logo.svg?v=v3.13.21" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./ceres-start/icon-180.png?v=v3.13.21" />
+    <script
+      src="./shinylive/load-shinylive-sw.js"
+      type="module"
+    ></script>
+    <script type="module">
+      import { runExportedApp } from "./shinylive/shinylive.js";
+      runExportedApp({
+        id: "root",
+        appEngine: "r",
+        relPath: "",
+      });
+    </script>
+    <link rel="stylesheet" href="./shinylive/style-resets.css" />
+    <link rel="stylesheet" href="./shinylive/shinylive.css" />
+    
+  </head>
+  <body>
+    
+    <div style="height: 100vh; width: 100vw" id="root"></div>
+    
+  <style>
+  @font-face { font-family: "CERES SF Pro"; font-weight: 400; font-display: block;
+    src: url("ceres-start/SF-Pro-Text-Regular.woff2") format("woff2"); }
+  @font-face { font-family: "CERES SF Pro"; font-weight: 600 700; font-display: block;
+    src: url("ceres-start/SF-Pro-Text-Semibold.woff2") format("woff2"); }
+  #ceres-start {
+    --bg: #f3f5f9; --surface: #ffffff; --border: #e2e8f0; --text: #0f172a;
+    --muted: #64748b; --accent: #2f6fe4; --accent-soft: #e4ecfc; --bad: #dc2626;
+    position: fixed; inset: 0; z-index: 2147483000; display: grid; place-items: center;
+    padding: 24px 16px; background: var(--bg); color: var(--text);
+    font-family: "CERES SF Pro", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased; color-scheme: light;
+    transition: opacity 0.35s ease;
+  }
+  #ceres-start.gone { opacity: 0; pointer-events: none; }
+  #ceres-start .card {
+    width: 100%; max-width: 480px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08); padding: 28px 28px 24px;
+  }
+  #ceres-start .head { display: flex; align-items: center; gap: 14px; margin: 0 0 18px; }
+  #ceres-start .logo { width: 52px; height: 44px; flex: none; margin: 0 -4px; }
+  #ceres-start .logo svg { width: 100%; height: 100%; display: block; }
+  #ceres-start .eyebrow {
+    font-size: 12px; line-height: 1.35; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 4px;
+  }
+  #ceres-start h1 { font-size: 22px; line-height: 1.25; font-weight: 650; margin: 0; }
+  #ceres-start .track { position: relative; height: 4px; border-radius: 4px; background: var(--accent-soft); overflow: hidden; }
+
+  #ceres-start .track i {
+    position: absolute; top: 0; bottom: 0; left: 0; width: 34%; border-radius: 4px;
+    background: var(--accent); will-change: transform; animation: ceres-sweep 1.6s ease-in-out infinite;
+  }
+  @keyframes ceres-sweep { from { transform: translateX(-100%); } to { transform: translateX(295%); } }
+  #ceres-start .stage { font-size: 15px; line-height: 1.4; margin: 16px 0 4px; min-height: 1.4em; transition: opacity 0.25s ease; }
+  #ceres-start .stage.swap { opacity: 0; }
+  #ceres-start .meta {
+    font-size: 13px; line-height: 1.4; color: var(--muted); margin: 0; min-height: 1.4em;
+    font-variant-numeric: tabular-nums;
+  }
+  #ceres-start .note {
+    font-size: 13px; line-height: 1.5; color: var(--muted);
+    border-top: 1px solid var(--border); margin: 20px 0 0; padding-top: 14px;
+  }
+  #ceres-start .note button {
+    font: inherit; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer;
+    text-decoration: underline;
+  }
+  #ceres-start.slow .track i { background: #d97706; }
+  @media (prefers-reduced-motion: reduce) {
+    #ceres-start .track i { animation: none; transform: none; width: 100%; opacity: 0.5; }
+  }
+</style>
+<div id="ceres-start" role="status" aria-live="polite">
+  <main class="card">
+    <div class="head">
+      <div class="logo" id="ceres-start-logo" aria-hidden="true"></div>
+      <div>
+        <p class="eyebrow">Cost Estimating Relationship Evaluation Suite</p>
+        <h1>Starting CERES&hellip;</h1>
+      </div>
+    </div>
+    <div class="track" aria-hidden="true"><i></i></div>
+    <p class="stage" id="ceres-start-stage">Starting R and loading CERES&hellip;</p>
+    <p class="meta" id="ceres-start-meta">0:00 elapsed</p>
+    <p class="note" id="ceres-start-note">
+      Runs in your browser; nothing you load leaves this computer.
+    </p>
+  </main>
+</div>
+<script>
+(function () {
+  var KEY = "ceres-start";
+  var USUAL = 15;
+  var SLOW = 60;
+  var box = document.getElementById("ceres-start");
+  var stageEl = document.getElementById("ceres-start-stage");
+  var metaEl = document.getElementById("ceres-start-meta");
+  var noteEl = document.getElementById("ceres-start-note");
+
+  var state = null;
+  try { state = JSON.parse(sessionStorage.getItem(KEY) || "null"); } catch (e) {}
+  if (!state || Date.now() - state.t0 > 120000) {
+    state = { t0: Date.now(), first: !(navigator.serviceWorker && navigator.serviceWorker.controller) };
+  }
+  try { sessionStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+
+  function clock(s) {
+    s = Math.max(0, Math.floor(s));
+    var m = Math.floor(s / 60), r = s % 60;
+    return m + ":" + (r < 10 ? "0" : "") + r;
+  }
+
+  var PHRASES = [
+    "Unpacking packages…",
+    "Loading regression engine…",
+    "Generating toolkit…",
+    "Tuning the network…",
+    "Calibrating solvers…",
+    "Building plot templates…",
+    "Fetching log conversions…",
+    "Initializing confidence intervals…",
+    "Preparing outlier checks…",
+    "Assembling the equation builder…"
+  ];
+  var bag = [], phrase = null, phraseUntil = 0;
+  function nextGap() { return 7500 + Math.random() * 5000; }
+  function nextPhrase() {
+    if (!bag.length) {
+      bag = PHRASES.slice();
+      for (var j = bag.length - 1; j > 0; j--) { var k = Math.floor(Math.random() * (j + 1)), t = bag[j]; bag[j] = bag[k]; bag[k] = t; }
+      if (bag[bag.length - 1] === phrase) bag.unshift(bag.pop());
+    }
+    return bag.pop();
+  }
+  function setStage(text) {
+    if (stageEl.textContent === text || stageEl.dataset.next === text) return;
+    if (!stageEl.textContent) { stageEl.textContent = text; return; }
+    stageEl.dataset.next = text;
+    stageEl.classList.add("swap");
+    setTimeout(function () { stageEl.textContent = stageEl.dataset.next; delete stageEl.dataset.next; stageEl.classList.remove("swap"); }, 250);
+  }
+
+  var shown = false, slowShown = false, readySince = 0;
+  function finish() {
+    if (shown) return;
+    shown = true;
+    try { sessionStorage.removeItem(KEY); } catch (e) {}
+    box.classList.add("gone");
+    setTimeout(function () { box.remove(); }, 400);
+  }
+
+  function appWindow() {
+    var frame = document.querySelector("#root iframe");
+    try { return frame && frame.contentWindow; } catch (e) { return null; }
+  }
+
+  window.addEventListener("keydown", function (e) {
+    var reloadKey = e.key === "F5" || ((e.ctrlKey || e.metaKey) && !e.altKey && (e.key === "r" || e.key === "R"));
+    if (!reloadKey) return;
+    var win = appWindow();
+    try { if (win && typeof win.ceresAskReload === "function") { e.preventDefault(); win.ceresAskReload(); } } catch (err) {}
+  });
+
+  function step() {
+    if (shown) return;
+    var secs = (Date.now() - state.t0) / 1000;
+    var frame = document.querySelector("#root iframe");
+    var doc = null, win = null;
+    try { doc = frame && frame.contentDocument; win = frame && frame.contentWindow; } catch (e) {}
+    var shiny = win && win.Shiny;
+    var connected = !!(shiny && shiny.shinyapp && shiny.shinyapp.isConnected && shiny.shinyapp.isConnected());
+
+    if (!connected) {
+
+      var now = Date.now();
+      if (!phraseUntil) {
+        phraseUntil = now + nextGap();
+        setStage(state.first ? "Downloading R and loading CERES…" : "Starting R and loading CERES…");
+      } else if (now >= phraseUntil) {
+        phrase = nextPhrase(); phraseUntil = now + nextGap();
+        setStage(phrase);
+      }
+    } else {
+
+      setStage("Getting the workspace ready…");
+    }
+
+    var ready = connected && doc && doc.querySelector(".shiny-bound-output") &&
+      !doc.documentElement.classList.contains("shiny-busy");
+    if (ready) {
+      if (!readySince) readySince = Date.now();
+      if (Date.now() - readySince > 300) { finish(); return; }
+    } else {
+      readySince = 0;
+    }
+
+    metaEl.textContent = clock(secs) + " elapsed" +
+      (state.first ? " · first visit: about 65 MB, then cached" : " · usually about " + USUAL + " s");
+
+    if (secs > SLOW && !slowShown) {
+      slowShown = true;
+      box.classList.add("slow");
+      noteEl.innerHTML = "This is taking longer than usual. " +
+        "<button type=\"button\" id=\"ceres-start-show\">Show the page</button> to see what it is doing.";
+      document.getElementById("ceres-start-show").onclick = finish;
+    }
+  }
+  step();
+  setInterval(step, 200);
+
+  var MARK = { cx: 32, cy: 32, R: 27, r: 8.5, th: -18, pr: 17, rest: 30,
+               dotR: 4, glow: 0.475, minOp: 0.03, gamma: 1.4, n: 120 };
+  function mPt(tDeg) {
+    var t = tDeg * Math.PI / 180, a = MARK.th * Math.PI / 180;
+    return [MARK.cx + MARK.R * Math.cos(t) * Math.cos(a) - MARK.r * Math.sin(t) * Math.sin(a),
+            MARK.cy + MARK.R * Math.cos(t) * Math.sin(a) + MARK.r * Math.sin(t) * Math.cos(a)];
+  }
+  function mArc(t1, t2) {
+    var p1 = mPt(t1), p2 = mPt(t2);
+    return "M" + p1[0].toFixed(2) + " " + p1[1].toFixed(2) + "A" + MARK.R + " " + MARK.r + " " +
+           MARK.th + " 0 1 " + p2[0].toFixed(2) + " " + p2[1].toFixed(2);
+  }
+  function grey(mid, dotAngle) {
+    var d = ((mid - dotAngle) % 360 + 360) % 360, k = 1 - d / 360;
+    var v = Math.round(255 * (MARK.minOp + (1 - MARK.minOp) * Math.pow(k, MARK.gamma)));
+    return "rgb(" + v + "," + v + "," + v + ")";
+  }
+  var host = document.getElementById("ceres-start-logo");
+  var u = "csm", stepDeg = 360 / MARK.n, segs = "", front = "", mids = [];
+  for (var i = 0; i < MARK.n; i++) {
+    var t1 = i * stepDeg, t2 = t1 + stepDeg + 1.0, mid = t1 + stepDeg / 2;
+    var path = '<path d="' + mArc(t1, t2) + '" stroke="#fff"/>';
+    segs += path;
+    if (Math.sin(mid * Math.PI / 180) >= 0) front += path;
+    mids.push(mid);
+  }
+  var ring = '<ellipse cx="32" cy="32" rx="27" ry="8.5" transform="rotate(-18 32 32)" fill="none" stroke="#4f7dff" stroke-width="3"/>';
+  var pr = MARK.pr;
+  host.innerHTML =
+    '<svg viewBox="-6 0 76 64" xmlns="http://www.w3.org/2000/svg">' +
+    '<defs>' +
+    '<radialGradient id="' + u + 'o" cx=".34" cy=".28" r=".9"><stop offset="0" stop-color="#a9c6ff"/><stop offset=".55" stop-color="#4f7dff"/><stop offset="1" stop-color="#5b3fd9"/></radialGradient>' +
+    '<radialGradient id="' + u + 'h" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>' +
+    '<radialGradient id="' + u + 'f" cx=".5" cy="1" r=".6"><stop offset="0" stop-color="#d6e4ff" stop-opacity=".55"/><stop offset="1" stop-color="#d6e4ff" stop-opacity="0"/></radialGradient>' +
+    '<radialGradient id="' + u + 'g" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".35" stop-color="#7aa2ff" stop-opacity=".55"/><stop offset="1" stop-color="#7aa2ff" stop-opacity="0"/></radialGradient>' +
+    '<radialGradient id="' + u + 's" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>' +
+    '<mask id="' + u + 'ma" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><g fill="none" stroke-width="5" class="lm-all">' + segs + '</g></mask>' +
+    '<mask id="' + u + 'mf" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><g fill="none" stroke-width="5" class="lm-front">' + front + '</g></mask>' +
+    '<clipPath id="' + u + 'c"><circle cx="32" cy="32" r="' + pr + '"/></clipPath>' +
+    '</defs>' +
+    '<g mask="url(#' + u + 'ma)">' + ring + '</g>' +
+    '<g class="lm-back"></g>' +
+    '<circle cx="32" cy="32" r="' + pr + '" fill="url(#' + u + 'o)"/>' +
+    '<ellipse cx="32" cy="' + (32 + pr * .62).toFixed(2) + '" rx="' + (pr * .7).toFixed(2) + '" ry="' + (pr * .32).toFixed(2) + '" fill="url(#' + u + 'f)"/>' +
+    '<ellipse cx="' + (32 - pr * .32).toFixed(2) + '" cy="' + (32 - pr * .46).toFixed(2) + '" rx="' + (pr * .46).toFixed(2) + '" ry="' + (pr * .26).toFixed(2) + '" fill="url(#' + u + 'h)" transform="rotate(-24 ' + (32 - pr * .32).toFixed(2) + ' ' + (32 - pr * .46).toFixed(2) + ')"/>' +
+    '<circle cx="32" cy="32" r="' + (pr - .7) + '" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="1.2"/>' +
+    '<g clip-path="url(#' + u + 'c)"><g mask="url(#' + u + 'mf)">' + ring + '</g></g>' +
+    '<g class="lm-fore"><g class="lm-dot">' +
+      '<circle r="' + (MARK.dotR * (1.6 + 1.2 * MARK.glow)).toFixed(2) + '" fill="url(#' + u + 'g)" opacity="' + (0.35 + 0.65 * MARK.glow).toFixed(2) + '"/>' +
+      '<circle r="' + MARK.dotR + '" fill="#4f7dff"/>' +
+      '<ellipse cx="' + (-MARK.dotR * .28).toFixed(2) + '" cy="' + (-MARK.dotR * .36).toFixed(2) + '" rx="' + (MARK.dotR * .62).toFixed(2) + '" ry="' + (MARK.dotR * .4).toFixed(2) + '" fill="url(#' + u + 's)" transform="rotate(-24 ' + (-MARK.dotR * .28).toFixed(2) + ' ' + (-MARK.dotR * .36).toFixed(2) + ')"/>' +
+    '</g></g>' +
+    '</svg>';
+  var svg = host.firstChild;
+  var allP = svg.querySelectorAll(".lm-all path"), frontP = svg.querySelectorAll(".lm-front path");
+  var frontMids = mids.filter(function (m) { return Math.sin(m * Math.PI / 180) >= 0; });
+  var dot = svg.querySelector(".lm-dot"), back = svg.querySelector(".lm-back"), fore = svg.querySelector(".lm-fore");
+  var inFront = true;
+  function paint(angle) {
+    for (var i = 0; i < allP.length; i++) allP[i].setAttribute("stroke", grey(mids[i], angle));
+    for (var j = 0; j < frontP.length; j++) frontP[j].setAttribute("stroke", grey(frontMids[j], angle));
+    var p = mPt(angle);
+    dot.setAttribute("transform", "translate(" + p[0].toFixed(2) + " " + p[1].toFixed(2) + ")");
+    var f = Math.sin(angle * Math.PI / 180) >= 0;
+    if (f !== inFront) { (f ? fore : back).appendChild(dot); inFront = f; }
+  }
+  var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var angle = MARK.rest, last = 0;
+  paint(angle);
+  function frame(now) {
+    if (shown) return;
+    var dt = last ? Math.min(now - last, 64) : 16;
+    last = now;
+    angle = (angle - 360 * dt / 1600) % 360;
+    paint(angle);
+    requestAnimationFrame(frame);
+  }
+  if (!still) requestAnimationFrame(frame);
+})();
+
+(function () {
+  var ua = navigator.userAgent || "";
+  if (!(/AppleWebKit/.test(ua) && !/Chrome\/|Chromium\/|Edg\//.test(ua))) return;
+  var last = 0;
+  function notify() {
+    var f = document.querySelector("#root iframe"), win = null;
+    try { win = f && f.contentWindow; } catch (e) {}
+    if (win && typeof win.ceresStackOverflow === "function") win.ceresStackOverflow();
+    else if (window.confirm("This step needed more room than this browser allows. Reload CERES to carry on?")) location.reload();
+  }
+  ["error", "warn", "log"].forEach(function (k) {
+    var f = console[k];
+    console[k] = function () {
+      try {
+        if (Date.now() - last > 10000) {
+          var t = Array.prototype.map.call(arguments, function (a) { return typeof a === "string" ? a : (a && a.message) || String(a); }).join(" ");
+          if (/Maximum call stack size exceeded/.test(t)) { last = Date.now(); setTimeout(notify, 0); }
+        }
+      } catch (e) {}
+      return f.apply(this, arguments);
+    };
+  });
+})();
+
+(function () {
+  if (!/[?&]debug\b/.test(location.search)) return;
+  var lines = [], panel = null, hooked = null, busySince = 0;
+
+  ["log", "warn", "error"].forEach(function (k) {
+    var f = console[k]; console[k] = function () {
+      try {
+        var t = Array.prototype.map.call(arguments, function (a) { return typeof a === "string" ? a : (a && a.message) || String(a); }).join(" ");
+        if (t && !/^\s*$/.test(t)) log((k === "log" ? "R " : "R " + k.toUpperCase() + " ") + t.slice(0, 300));
+      } catch (e) {}
+      return f.apply(this, arguments);
+    };
+  });
+  function log(t) {
+    var d = new Date(), ts = ("0" + d.getMinutes()).slice(-2) + ":" + ("0" + d.getSeconds()).slice(-2);
+    lines.push(ts + " " + t); if (lines.length > 200) lines.shift();
+  }
+  function make() {
+    panel = document.createElement("pre");
+    panel.style.cssText = "position:fixed;left:0;right:0;bottom:0;height:42vh;margin:0;z-index:2147483646;overflow:auto;" +
+      "background:rgba(15,21,34,.94);color:#d6e2ff;font:11px/1.35 ui-monospace,Menlo,monospace;padding:8px;white-space:pre-wrap;-webkit-user-select:text;user-select:text";
+    document.body.appendChild(panel);
+  }
+  function hook(win) {
+    if (hooked === win) return; hooked = win;
+    log("app frame found; service worker: " + !!(navigator.serviceWorker && navigator.serviceWorker.controller) +
+        "; isolated: " + !!window.crossOriginIsolated + "; cores: " + navigator.hardwareConcurrency);
+    win.addEventListener("error", function (e) { log("JS ERROR " + e.message + " @" + (e.filename || "").split("/").pop() + ":" + e.lineno); });
+    win.addEventListener("unhandledrejection", function (e) { log("PROMISE " + (e.reason && (e.reason.message || e.reason))); });
+    ["error", "warn"].forEach(function (k) {
+      var f = win.console[k]; win.console[k] = function () {
+        try { log(k.toUpperCase() + " " + Array.prototype.map.call(arguments, String).join(" ").slice(0, 300)); } catch (e) {}
+        return f.apply(this, arguments);
+      };
+    });
+    var $ = win.jQuery; if (!$) return;
+    var $d = $(win.document);
+    $d.on("shiny:busy", function () { busySince = Date.now(); log("busy"); });
+    $d.on("shiny:idle", function () { busySince = 0; log("idle"); });
+    $d.on("shiny:value", function (e) { log("value " + e.name); });
+    $d.on("shiny:error", function (e) { log("OUTPUT ERROR " + e.name + ": " + (e.error && e.error.message)); });
+    $d.on("shiny:recalculating", function (e) { if (e.target && e.target.id) log("recalc " + e.target.id); });
+    $d.on("shiny:disconnected", function () { log("DISCONNECTED"); });
+    $d.on("shown.bs.tab", function (e) { log("tab " + (e.target && e.target.getAttribute("data-value"))); });
+    $d.on("shiny:inputchanged", function (e) { if (!/^\.clientdata|_mouse|_hover/.test(e.name)) log("input " + e.name); });
+  }
+  function hiddenState(win) {
+    try {
+      var iv = win.Shiny.shinyapp.$inputValues, doc = win.document, out = [];
+      Array.prototype.forEach.call(doc.querySelectorAll(".tab-pane.active .shiny-bound-output"), function (el) {
+        var r = el.getBoundingClientRect(); if (!el.id || r.width === 0) return;
+        var h = iv[".clientdata_output_" + el.id + "_hidden"];
+        out.push(el.id + (h ? " HIDDEN" : "") + (el.classList.contains("recalculating") ? " recalc" : "") + (el.innerHTML ? "" : " empty"));
+      });
+      return out.slice(0, 14).join(", ");
+    } catch (e) { return "?"; }
+  }
+  setInterval(function () {
+    if (!document.body) return;
+    if (!panel) make();
+    var f = document.querySelector("#root iframe"), win = null;
+    try { win = f && f.contentWindow; } catch (e) {}
+    if (win && win.jQuery && win.Shiny) hook(win);
+    var head = "CERES debug · " + (win && win.Shiny && win.Shiny.shinyapp && win.Shiny.shinyapp.isConnected() ? "connected" : "not connected") +
+      (win && win.document.documentElement.classList.contains("shiny-busy") ? " · BUSY" + (busySince ? " " + Math.round((Date.now() - busySince) / 1000) + " s" : "") : " · idle") +
+      "\nvisible outputs: " + (win && win.Shiny ? hiddenState(win) : "-") + "\n---\n";
+    var atEnd = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 4;
+    panel.textContent = head + lines.slice().reverse().join("\n");
+    if (atEnd) panel.scrollTop = 0;
+  }, 1000);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+WebAssembly (webR) builds of the R packages the CERES web page needs that have
+no prebuilt browser version.
+
+Third-party software
+--------------------
+bnlearn 5.2.1 (pkgs/bnlearn), modified build 5.2.1.1
+  Copyright (C) Marco Scutari; contributor Tomi Silander.
+  https://www.bnlearn.com/  -  https://cran.r-project.org/package=bnlearn
+  License: GNU General Public License, version 2 or later
+  (licenses/GPL-2, licenses/GPL-3).
+  Modified 2026-11-21: build metadata only, no source code changed - see
+  pkgs/bnlearn/inst/MODIFIED. Not an official bnlearn release and not
+  endorsed by its authors. The complete corresponding source is in
+  pkgs/bnlearn.
+
+The following are also unofficial copies, not endorsed by their authors, made
+2026-11-21 for the CERES web page; each keeps its original licence and author
+list, and its inst/MODIFIED lists every change. Full source is in pkgs/.
+
+plotly 4.12.1 -> pkgs/plotly (4.12.1.1)
+  Copyright (C) 2017 Plotly, Inc. (LICENSE). Authors: Carson Sievert, Chris
+  Parmer, Toby Hocking, Scott Chamberlain, Karthik Ram, Marianne Corvellec,
+  Pedro Despouy; contributor Salim Brueggemann.
+  License: MIT (pkgs/plotly/LICENSE). https://cran.r-project.org/package=plotly
+htmlwidgets 1.6.4 -> pkgs/htmlwidgets (1.6.4.1)
+  Copyright (C) 2016-2023 Ramnath Vaidyanathan, Joe Cheng, JJ Allaire, Yihui
+  Xie, and Kenton Russell (LICENSE); also Posit Software, PBC. Authors add
+  Carson Sievert; contributor Ellis Hughes. inst/www/htmlwidgets.js is the webR
+  project's version by George Stagg (github.com/r-wasm/htmlwidgets, branch webr,
+  commit 892798fc; MIT).
+  License: MIT (pkgs/htmlwidgets/LICENSE). https://cran.r-project.org/package=htmlwidgets
+thematic 0.1.8 -> pkgs/thematic (0.1.8.1)
+  Copyright (C) 2021 Carson Sievert (LICENSE); also Posit Software, PBC.
+  Authors: Carson Sievert, Barret Schloerke, Joe Cheng.
+  License: MIT (pkgs/thematic/LICENSE). https://cran.r-project.org/package=thematic
+caret 7.0-1 -> pkgs/caretlite (subset)
+  Copyright (C) Max Kuhn and contributors (see pkgs/caretlite/DESCRIPTION);
+  .RDiag from R's stats package, Copyright (C) the R Core Team.
+  License: GPL version 2 or later. https://cran.r-project.org/package=caret
+naniar 1.1.0 -> pkgs/naniarlite (subset)
+  Copyright (C) 2016-2018 Nicholas Tierney and co-authors.
+  License: MIT (pkgs/naniarlite/LICENSE). https://cran.r-project.org/package=naniar
+DALEX 2.5.4 -> pkgs/DALEXlite (subset)
+  Copyright (C) Przemyslaw Biecek, Szymon Maksymiuk, Hubert Baniecki.
+  License: GPL. https://cran.r-project.org/package=DALEX
+iBreakDown 2.1.2 -> pkgs/iBreakDownlite (subset)
+  Copyright (C) Przemyslaw Biecek, Alicja Gosiewska, Hubert Baniecki, Adam
+  Izdebski; contributor Dariusz Komosinski.
+  License: GPL version 3 (licenses/GPL-3). https://cran.r-project.org/package=iBreakDown
+quantreg 6.1 -> pkgs/quantreglite (subset)
+  Copyright (C) Roger Koenker and contributors (see pkgs/quantreglite/DESCRIPTION).
+  License: GPL version 2 or later. https://cran.r-project.org/package=quantreg
+
+Our own code
+------------
+ceresfast (pkgs/ceresfast): compiled kernels for the CERES variable search.
+  Same terms as CERES.
