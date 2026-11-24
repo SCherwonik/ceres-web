@@ -1,0 +1,8 @@
+CERES - third-party components
+
+www/katex.min.js, www/katex.min.css, www/fonts/KaTeX_*.woff2
+  KaTeX - https://katex.org - Copyright (c) 2013-2020 Khan Academy and other
+  contributors. MIT License.
+
+R packages used by CERES are installed from CRAN / the webR repository and are
+not part of this repository; each keeps its own licence.
